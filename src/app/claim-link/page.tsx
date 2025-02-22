@@ -1,9 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -11,18 +8,31 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Check, CircleCheck } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 type FormValues = {
   username: string;
 };
 
+const formSchema = z.object({
+  username: z.string().min(2, { message: "First Name is required" }),
+});
+
 const ClaimLink = () => {
-  const form = useForm<FormValues>({
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
     },
   });
 
+  const username = form.watch("username");
   const onSubmit = (data: FormValues) => {
     console.log(data);
   };
@@ -37,6 +47,7 @@ const ClaimLink = () => {
             height={40}
             alt="logo-kahete"
             className="w-10 h-10"
+            priority
           />
         </div>
 
@@ -54,23 +65,31 @@ const ClaimLink = () => {
               name="username"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormControl>
-                    <Input {...field} placeholder="kahete.com/your-name" />
-                  </FormControl>
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="kahete.com/your-name"
+                        className="pr-10"
+                      />
+                    </FormControl>
+                    {username && (
+                      <CircleCheck className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500" />
+                    )}
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <div className="fixed bottom-8 left-0 right-0 px-4">
+              <div className="max-w-md mx-auto">
+                <Button type="submit" className="w-full" disabled={!username}>
+                  Next
+                </Button>
+              </div>
+            </div>
           </form>
         </Form>
-      </div>
-
-      <div className="fixed bottom-8 left-0 right-0 px-4">
-        <div className="max-w-md mx-auto">
-          <Button type="submit" className="w-full" onClick={form.handleSubmit(onSubmit)}>
-            Next
-          </Button>
-        </div>
       </div>
     </div>
   );
