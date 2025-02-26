@@ -55,6 +55,7 @@ export default {
 				'sky-blue': '#70C6EB',
 				'stone-dark-gray': '#232323',
 				'stone-light-gray': '#3D3D3F',
+				'stone-gray': '#9CA3AF',
 				'charcoal-night': '#191E21',
 				midnight: '#14191c',
 			},
