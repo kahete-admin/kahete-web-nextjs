@@ -52,7 +52,7 @@ const Stepper = () => {
         {currentStep === 3 && <Step3 />}
       </div>
 
-      {/* Navigation Buttons */}
+      {/* Navigation Button */}
       <div className="flex justify-between mt-8">
         <Button
           onClick={nextStep}
@@ -65,6 +65,5 @@ const Stepper = () => {
     </div>
   );
 };
-
 
 export default Stepper;

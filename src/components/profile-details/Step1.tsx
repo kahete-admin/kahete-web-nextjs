@@ -1,20 +1,100 @@
 "use client";
 
-import { CircleUserRound } from "lucide-react";
-import { useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { ChevronDown, CircleUserRound, Phone } from "lucide-react";
+import { forwardRef, useRef, useState } from "react";
+import * as RPNInput from "react-phone-number-input";
+import flags from "react-phone-number-input/flags";
+
+type CountrySelectProps = {
+  disabled?: boolean;
+  value: RPNInput.Country;
+  onChange: (value: RPNInput.Country) => void;
+  options: { label: string; value: RPNInput.Country | undefined }[];
+};
+
+export const CountrySelect = ({
+  disabled,
+  value,
+  onChange,
+  options,
+}: CountrySelectProps) => {
+  const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    onChange(event.target.value as RPNInput.Country);
+  };
+
+  return (
+    <div className="relative inline-flex items-center self-stretch rounded-s-lg border py-2 pe-2 ps-3 border-white text-muted-foreground transition-shadow z-10 border-ring ring-[3px] ring-ring/20 hover:bg-accent hover:text-foreground has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50">
+      <div className="inline-flex items-center gap-1" aria-hidden="true">
+        <FlagComponent country={value} countryName={value} aria-hidden="true" />
+        <span className="text-muted-foreground/80">
+          <ChevronDown
+            size={16}
+            strokeWidth={2}
+            aria-hidden="true"
+            color="white"
+          />
+        </span>
+      </div>
+      <select
+        disabled={disabled}
+        value={value}
+        onChange={handleSelect}
+        className="absolute inset-0 text-sm opacity-0"
+        aria-label="Select country"
+      >
+        <option key="default" value="">
+          Select a country
+        </option>
+        {options
+          .filter((x) => x.value)
+          .map((option, i) => (
+            <option key={option.value ?? `empty-${i}`} value={option.value}>
+              {option.label}{" "}
+              {option.value &&
+                `+${RPNInput.getCountryCallingCode(option.value)}`}
+            </option>
+          ))}
+      </select>
+    </div>
+  );
+};
+
+export const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
+  const Flag = flags[country];
+
+  return (
+    <span className="w-5 overflow-hidden rounded-sm">
+      {Flag ? (
+        <Flag title={countryName} />
+      ) : (
+        <Phone size={16} aria-hidden="true" color="white" />
+      )}
+    </span>
+  );
+};
+export const PhoneInput = forwardRef<
+  HTMLInputElement,
+  React.ComponentProps<"input">
+>(({ className, ...props }, ref) => {
+  return (
+    <Input
+      className={cn(
+        "-ms-px rounded-s-none shadow-none focus-visible:z-10",
+        className
+      )}
+      ref={ref}
+      {...props}
+    />
+  );
+});
 
 export const Step1 = () => {
   const [image, setImage] = useState<string | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState<string | undefined>(undefined); // Estado para el número de teléfono
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,31 +160,33 @@ export const Step1 = () => {
       </div>
 
       <div>
-        <Label>Name *</Label>
+        <Label>Name <span className="text-destructive">*</span></Label>
         <Input type="text" placeholder="Enter name" />
       </div>
 
       <div>
-        <Label>Email Address *</Label>
+        <Label>Email Address <span className="text-destructive">*</span></Label>
         <Input type="email" placeholder="name@domain.com" />
       </div>
 
-      <div>
-        <Label>Phone Number *</Label>
-        <div className="flex gap-2">
-          <Select>
-            <SelectTrigger className="w-24">
-              <SelectValue placeholder="+503" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="+503">+503</SelectItem>
-            </SelectContent>
-          </Select>
-          <Input type="tel" placeholder="0000 - 0000" />
+      <div className="space-y-2">
+        <div className="space-y-2">
+          <Label htmlFor="input-02">
+            Phone number <span className="text-destructive">*</span>
+          </Label>
+          <RPNInput.default
+            className="flex rounded-lg shadow-sm shadow-black/5 bg-[#191E21]"
+            international
+            flagComponent={FlagComponent}
+            countrySelectComponent={CountrySelect}
+            inputComponent={PhoneInput}
+            placeholder="Enter phone number"
+            value={phoneNumber}
+            onChange={(newValue) => setPhoneNumber(newValue ?? "")}
+          />
         </div>
       </div>
 
-      {/* Rol */}
       <div>
         <Label>Role</Label>
         <Input type="text" placeholder="Enter role" />
