@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -76,6 +75,7 @@ export const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
     </span>
   );
 };
+
 export const PhoneInput = forwardRef<
   HTMLInputElement,
   React.ComponentProps<"input">
