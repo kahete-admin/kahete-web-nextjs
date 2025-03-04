@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -10,9 +9,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, CircleCheck } from "lucide-react";
+import { CircleCheck } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -34,7 +32,7 @@ const ClaimLink = () => {
 
   const username = form.watch("username");
   const onSubmit = (data: FormValues) => {
-    console.log(data);
+    window.alert(data);
   };
 
   return (

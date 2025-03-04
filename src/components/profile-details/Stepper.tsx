@@ -1,9 +1,7 @@
 "use client";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
-import Step1 from "./Step1";
-import { Step2 } from "./Step2";
-import { Step3 } from "./Step3";
+import { Step1, Step2, Step3 } from "./index";
 import { Button } from "../ui/button";
 
 const Stepper = () => {
@@ -11,15 +9,13 @@ const Stepper = () => {
   const totalSteps = 3;
 
   const nextStep = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
-    }
+    if (currentStep > totalSteps) return;
+    setCurrentStep(currentStep + 1);
   };
 
   const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
+    if (currentStep < 1) return;
+    setCurrentStep(currentStep - 1);
   };
 
   return (
